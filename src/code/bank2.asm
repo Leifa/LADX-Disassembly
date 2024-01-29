@@ -7831,7 +7831,7 @@ ApplyLinkGroundPhysics_part2::
     cp   GROUND_VFX_F0                            ; $763D: $FE $F0
     jr   c, .jr_002_7644                          ; $763F: $38 $03
 
-    jp   label_002_7C14                           ; $7641: $C3 $14 $7C
+    jp   ConveyerBeltMovement                     ; $7641: $C3 $14 $7C
 
 .jr_002_7644
     cp   GROUND_VFX_51                            ; $7644: $FE $51

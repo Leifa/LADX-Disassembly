@@ -757,13 +757,16 @@ RoomTransitionSecondHalfHandler::
     ; nothing more to do.
     ret                                           ; $7C03: $C9
 
-Data_002_7C04::
-    db   $00, $00, $FF, $01, $01, $FF, $01, $FF   ; $7C04
+; The following are the offsets for Link's position when he is standing
+; on a conveyer belt, in pixels. Directions:
+; Down, up, left, right, down-right, down-left, up-right, up-left
+ConveyerBeltOffsetsX::
+    db   0, 0, -1, 1, 1, -1, 1, -1                ; $7C04
 
-Data_002_7C0C::
-    db   $01, $FF, $00, $00, $01, $01, $FF, $FF   ; $7C0C
+ConveyerBeltOffsetsY::
+    db   1, -1, 0, 0, 1, 1, -1, -1                ; $7C0C
 
-label_002_7C14:
+ConveyerBeltMovement:
     ldh  a, [hFrameCounter]                       ; $7C14: $F0 $E7
     and  $03                                      ; $7C16: $E6 $03
     ld   hl, wC167                                ; $7C18: $21 $67 $C1
@@ -778,12 +781,12 @@ label_002_7C14:
     sub  $F0                                      ; $7C28: $D6 $F0
     ld   e, a                                     ; $7C2A: $5F
     ld   d, $00                                   ; $7C2B: $16 $00
-    ld   hl, Data_002_7C04                        ; $7C2D: $21 $04 $7C
+    ld   hl, ConveyerBeltOffsetsX                 ; $7C2D: $21 $04 $7C
     add  hl, de                                   ; $7C30: $19
     ldh  a, [hLinkPositionX]                      ; $7C31: $F0 $98
     add  [hl]                                     ; $7C33: $86
     ldh  [hLinkPositionX], a                      ; $7C34: $E0 $98
-    ld   hl, Data_002_7C0C                        ; $7C36: $21 $0C $7C
+    ld   hl, ConveyerBeltOffsetsY                 ; $7C36: $21 $0C $7C
     add  hl, de                                   ; $7C39: $19
     ldh  a, [hLinkPositionY]                      ; $7C3A: $F0 $99
     add  [hl]                                     ; $7C3C: $86
