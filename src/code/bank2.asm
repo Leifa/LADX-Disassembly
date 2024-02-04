@@ -1339,12 +1339,33 @@ jr_002_49AA:
     ld   [wC16A], a                               ; $49C4: $EA $6A $C1
     jp   ApplyLinkMotionState                     ; $49C7: $C3 $94 $17
 
-Data_002_49CA::
-    db   $01, $00, $01, $00, $00, $01, $00, $01, $01, $01, $00, $00, $00, $00, $01, $01
-    db   $01, $00, $01, $00, $00, $01, $00, $01, $01, $01, $00, $00, $00, $00, $01, $01
-    db   $00, $01, $01, $01, $01, $00, $01, $01, $01, $01, $00, $01, $01, $01, $01, $00
-    db   $01, $00, $00, $00, $00, $01, $00, $00, $00, $00, $01, $00, $00, $00, $00, $01
-    db   $00, $01, $01, $00, $01, $00, $00, $01
+; These are collision values for tiles that have different collision
+; behaviour for each of the four 8-by-8 pixel sub-tiles.
+; Each tile uses 4 bytes: top-left, top-right, bottom-left, bottom-right.
+; 0 means open, 1 means solid.
+; There are 14 possibilities for such tiles (excluding the full solid
+; and the full empty tile). Each combination appears in this table, but
+; for an unknown reason, there are 18 entries in this table with the first
+; four entries being repeated.
+CollisionData8by8::
+    db   1, 0, 1, 0
+    db   0, 1, 0, 1
+    db   1, 1, 0, 0
+    db   0, 0, 1, 1
+    db   1, 0, 1, 0
+    db   0, 1, 0, 1
+    db   1, 1, 0, 0
+    db   0, 0, 1, 1
+    db   0, 1, 1, 1
+    db   1, 0, 1, 1
+    db   1, 1, 0, 1
+    db   1, 1, 1, 0
+    db   1, 0, 0, 0
+    db   0, 1, 0, 0
+    db   0, 0, 1, 0
+    db   0, 0, 0, 1
+    db   0, 1, 1, 0
+    db   1, 0, 0, 1
 
 Data_002_4A12::
     db   $08, $F8
@@ -6915,12 +6936,12 @@ label_002_715F:
     jr   z, .jr_716B                              ; $7165: $28 $04
 
     cp   $7D                                      ; $7167: $FE $7D
-    jr   nz, jr_002_716E                          ; $7169: $20 $03
+    jr   nz, Check8by8TileCollision               ; $7169: $20 $03
 
 .jr_716B
     call func_002_7468                            ; $716B: $CD $68 $74
 
-jr_002_716E:
+Check8by8TileCollision:
     pop  af                                       ; $716E: $F1
     cp   $90                                      ; $716F: $FE $90
     jp   nc, label_002_7461                       ; $7171: $D2 $61 $74
@@ -6930,7 +6951,7 @@ jr_002_716E:
     sla  a                                        ; $7178: $CB $27
     ld   e, a                                     ; $717A: $5F
     ld   d, $00                                   ; $717B: $16 $00
-    ld   hl, Data_002_49CA                        ; $717D: $21 $CA $49
+    ld   hl, CollisionData8by8                    ; $717D: $21 $CA $49
     add  hl, de                                   ; $7180: $19
     ldh  a, [hMultiPurpose4]                      ; $7181: $F0 $DB
     rra                                           ; $7183: $1F
